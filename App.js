@@ -7,6 +7,9 @@
  */
 
 import React from 'react';
+import ReduxThunk from 'redux-thunk';
+import { createStore, compose, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux'
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,17 +21,29 @@ import {
 } from 'react-native';
 import { Header, Search, ItemHero } from './src/components'
 import { globalStyle } from './src/utils'
+import { rootReducer } from './src/redux'
+
+const middlewares = [ReduxThunk]
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(
+    rootReducer,
+    composeEnhancers(applyMiddleware(...middlewares))
+);
 
 const App: () => React$Node = () => {
+
   const mockHeroes = [{name: 'batman', image: 'https://www.sideshow.com/storage/product-images/904599/iron-man-mark-lxxxv__silo.png'}, { name: 'shazam', image: 'https://www.sideshow.com/storage/product-images/904599/iron-man-mark-lxxxv__silo.png'}]
   return (
-    <>
+    <Provider store={store}>
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          <Header />
-          <Search />
+          <View style={styles.headerWrapper}>
+            <Header />
+            <Search />
+          </View>
           <Text style={styles.listHeader}>Nome</Text>
           <View>
             {mockHeroes.map(item => <ItemHero key={item.name} hero={item}/>)}
@@ -40,7 +55,7 @@ const App: () => React$Node = () => {
           )}
         </ScrollView>
       </SafeAreaView>
-    </>
+    </Provider>
   );
 };
 
@@ -60,7 +75,12 @@ const styles = StyleSheet.create({
   engine: {
     position: 'absolute',
     right: 0,
-  }
+  },
+  headerWrapper: {
+    width,
+    justifyContent: 'center',
+    flex: 1
+  },
 });
 
 export default App;
