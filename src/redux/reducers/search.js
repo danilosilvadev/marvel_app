@@ -1,6 +1,7 @@
 import actionType from '../actionTypes'
+import initialState from '../initialState'
 
-export default function (state = {}, payload = {}) {
+export default function (state = initialState, payload = {}) {
   switch (payload.type) {
     case actionType.SEARCH_SUCCESS:
       return {

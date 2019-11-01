@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import ReduxThunk from 'redux-thunk';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux'
@@ -16,12 +16,11 @@ import {
   ScrollView,
   View,
   Text,
-  StatusBar,
   Dimensions
 } from 'react-native';
-import { Header, Search, ItemHero } from './src/components'
-import { globalStyle } from './src/utils'
+import { Header, Search } from './src/components'
 import { rootReducer } from './src/redux'
+import { SearchPage } from './src/screens';
 
 const middlewares = [ReduxThunk]
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -31,9 +30,10 @@ const store = createStore(
     composeEnhancers(applyMiddleware(...middlewares))
 );
 
-const App: () => React$Node = () => {
+const App = () => {
 
-  const mockHeroes = [{name: 'batman', image: 'https://www.sideshow.com/storage/product-images/904599/iron-man-mark-lxxxv__silo.png'}, { name: 'shazam', image: 'https://www.sideshow.com/storage/product-images/904599/iron-man-mark-lxxxv__silo.png'}]
+  const [searchTerm, setSearchTerm] = useState('')
+
   return (
     <Provider store={store}>
       <SafeAreaView>
@@ -42,17 +42,16 @@ const App: () => React$Node = () => {
           style={styles.scrollView}>
           <View style={styles.headerWrapper}>
             <Header />
-            <Search />
+            <Search setSearchTerm={setSearchTerm} />
           </View>
-          <Text style={styles.listHeader}>Nome</Text>
           <View>
-            {mockHeroes.map(item => <ItemHero key={item.name} hero={item}/>)}
+            <SearchPage searchTerm={searchTerm} />
+            {global.HermesInternal == null ? null : (
+              <View style={styles.engine}>
+                <Text>Engine: Hermes</Text>
+              </View>
+            )}
           </View>
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text>Engine: Hermes</Text>
-            </View>
-          )}
         </ScrollView>
       </SafeAreaView>
     </Provider>
@@ -66,7 +65,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   listHeader: {
-    backgroundColor: globalStyle.mainColor,
     color: 'white',
     paddingTop: height * 0.01,
     paddingBottom: height * 0.01,

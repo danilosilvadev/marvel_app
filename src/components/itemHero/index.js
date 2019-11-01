@@ -12,7 +12,7 @@ export default function (props) {
   return (
       <View style={styles.wrapper}>
         <Image
-          style={{width: 50, height: 50}}
+          style={styles.image}
           source={{uri: props.hero && props.hero.image}}
         />
         <Text style={styles.name}>
@@ -23,7 +23,6 @@ export default function (props) {
   }
 
   const { height, width } = Dimensions.get('window');
-
   
   const styles = StyleSheet.create({
     wrapper: {
@@ -33,7 +32,7 @@ export default function (props) {
       borderBottomColor: globalStyle.mainColor,
       borderBottomWidth: 1,
       flexDirection: 'row',
-      alignItems: 'center'
+      alignItems: 'center',
     },
     image: {
       width: 50,

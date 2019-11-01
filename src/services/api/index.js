@@ -6,7 +6,7 @@ const customHeaders = new Headers({
     'Content-Type': 'application/json; charset=utf-8'
 });
 
-export default function ({term, offset = 0, itemsPerPage = 4}) {
+export default function (term, offset = 0, itemsPerPage = 4) {
     return fetch(`${mountURL()}&nameStartsWith=${term}&offset=${offset}&limit=${itemsPerPage}`, {
         method: 'GET',
         headers: customHeaders,
@@ -15,6 +15,8 @@ export default function ({term, offset = 0, itemsPerPage = 4}) {
         if(res.status !== 200) {
             return false
         }
-        return cleanDataMiddleware(res.json())
+        return res.json()
+    }).then(res => {
+        return cleanDataMiddleware(res, term)
     })
 }

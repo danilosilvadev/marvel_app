@@ -1,25 +1,33 @@
-import fetchSearch from '../../services'
+import {fetchSearch} from '../../services'
+import actionTypes from '../actionTypes'
 
 const searchSuccess = (payload) => ({
   type: actionTypes.SEARCH_SUCCESS,
   search: payload,
-  loading: false
+  loading: false,
+  requestError: false
 })
 
 const searchFailed = () => ({
   type: actionTypes.SEARCH_FAILED,
-  errorMessage: 'Requisição falhou',
+  requestError: true,
   loading: false
+})
+
+const startLoading = () => ({
+  type: actionTypes.LOADING,
+  loading: true,
+  requestError: false
 })
 
 const searchResults = (term, page) => {
   return dispatch => {
+    dispatch(startLoading())
     fetchSearch(term, page).then(data => {
-    console.log('termo assim')
     if (!data) {
       return dispatch(searchFailed())
     }
-    return dispatch(successSearch(data))
+    return dispatch(searchSuccess(data))
   })}
 }
 
